@@ -1,0 +1,1 @@
+clan://localhost/tvbox/19/19.json

@@ -1,0 +1,36 @@
+{
+    "urls": [
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/影视/api.json",
+            "name": "影视"
+        },
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/动漫/api.json",
+            "name": "动漫"
+        },
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/文艺/api.json",
+            "name": "文艺"
+        },
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/体育/api.json",
+            "name": "体育"
+        },
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/教育/api.json",
+            "name": "教育"
+        },
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/直播/api.json",
+            "name": "直播"
+        },
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/磁力/api.json",
+            "name": "磁力"
+        },
+        {
+            "url": "https://gitee.com/liuxiangsheng123/yingshicang/raw/master/dianying/xianlu4/云盘/api.json",
+            "name": "云盘"
+        }
+    ]
+}
