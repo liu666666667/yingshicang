@@ -1,9 +1,6 @@
 {
 "urls":[
 {
-    "url": "./dianying/xianlu1/m.json",
-    "name": "自用test"
-},{
     "url": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu1/m.json",
     "name": "自用"
 },
