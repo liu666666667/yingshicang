@@ -6,12 +6,9 @@
 }, 
   {
 "url": "https://gh-proxy.com/https://github.com/liu666666667/tvbox-api-backup/blob/main/tvbox/海量py聚合接口.json",
-"name": "tvbox-api-backup1聚合"
+"name": "tvbox-api-backup1py聚合"
 },
-  {
-"url": "https://gh-proxy.com/https://github.com/liu666666667/tvbox-api-backup/blob/main/tvbox/海量直播聚合接口.json",
-"name": "tvbox-api-backup1直播聚合"
-},
+
   {
 "url": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/tvbox-ysc-config/refs/heads/main/output/多仓订阅.json",
 "name": "tvbox-ysc-config多仓订阅"
