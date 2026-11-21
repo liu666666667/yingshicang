@@ -87,6 +87,13 @@ h1{font-size:30px;font-weight:700;letter-spacing:1px;
 .mini:hover{color:#fff;border-color:rgba(255,255,255,.25)}
 .mini.c{color:var(--acc)}
 .mini.c:hover{border-color:rgba(77,226,192,.5);background:rgba(77,226,192,.08)}
+.pled{width:9px;height:9px;border-radius:50%;flex:none;background:var(--mut)}
+.pled.loading{background:var(--live);box-shadow:0 0 8px var(--live);animation:blink .8s infinite}
+.pled.ok{background:var(--acc);box-shadow:0 0 8px var(--acc)}
+.pled.fail{background:#ff5c6c;box-shadow:0 0 8px #ff5c6c}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.probeinfo{font-size:12px;color:var(--mut);align-self:center;white-space:nowrap}
+.probehint{font-size:11px;color:var(--mut);text-align:center;margin:-10px 0 18px}
 .empty{text-align:center;color:var(--mut);padding:60px 0;font-size:14px}
 footer{text-align:center;color:var(--mut);font-size:12px;margin-top:50px;line-height:1.9}
 .toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);
@@ -109,8 +116,10 @@ footer{text-align:center;color:var(--mut);font-size:12px;margin-top:50px;line-he
   <div class="tabs" id="tabs"></div>
   <div class="bar">
     <input class="search" id="search" placeholder="搜索线路名称或地址…">
+    <button class="btn" id="probeAll">探测全部线路</button>
     <button class="btn" id="copyAll">复制当前全部地址</button>
   </div>
+  <div class="probehint" id="probeInfo">点「探测全部线路」检测每条地址是否可连接：<span style="color:#4de2c0">●</span> 可用　<span style="color:#ff5c6c">●</span> 失效　<span style="color:#ffb454">●</span> 检测中。结果仅反映当前网络环境</div>
   <div id="content"></div>
   <footer>
     资源来自网络，仅供学习交流，请勿用于违法及商业用途。<br>
@@ -192,6 +201,52 @@ var TABS=[
   {k:'live',  n:'直播订阅'}
 ];
 var cur='all', kw='';
+var probeState={}, probeRunning=false;
+function ledCls(u){var s=probeState[u];return 'pled'+(s?' '+s:'')}
+function refreshLed(u){
+  var key=encodeURIComponent(u);
+  Array.prototype.forEach.call(document.querySelectorAll('[data-led]'),function(el){
+    if(el.getAttribute('data-led')===key) el.className=ledCls(u);
+  });
+}
+function probeAll(){
+  if(probeRunning){toast('探测进行中，请稍候');return}
+  var urls=[];
+  DATA.forEach(function(g){g.items.forEach(function(it){if(it.u&&urls.indexOf(it.u)<0)urls.push(it.u)})});
+  if(!urls.length){toast('没有可探测的地址');return}
+  probeRunning=true;
+  var info=document.getElementById('probeInfo');
+  var done=0,ok=0,fail=0,total=urls.length,idx=0,CONC=8;
+  urls.forEach(function(u){probeState[u]='loading'});
+  render();
+  function setInfo(){info.innerHTML='探测中 '+done+'/'+total+' · <span style="color:#4de2c0">'+ok+' 可用</span> <span style="color:#ff5c6c">'+fail+' 失效</span>'}
+  function runOne(){
+    if(idx>=total){
+      probeRunning=false;
+      info.innerHTML='探测完成 · <span style="color:#4de2c0">'+ok+' 可用</span> <span style="color:#ff5c6c">'+fail+' 失效</span> · 点按钮可重测';
+      toast('探测完成');
+      return;
+    }
+    var u=urls[idx++];
+    var ctrl=(typeof AbortController!=='undefined')?new AbortController():null;
+    var timer=null,finished=false;
+    function finish(state){
+      if(finished)return;finished=true;
+      if(timer)clearTimeout(timer);
+      probeState[u]=state;
+      if(state==='ok')ok++;else fail++;
+      done++;refreshLed(u);setInfo();runOne();
+    }
+    timer=setTimeout(function(){if(ctrl)ctrl.abort();finish('fail')},9000);
+    try{
+      fetch(u,{mode:'no-cors',cache:'no-store',signal:ctrl?ctrl.signal:undefined})
+        .then(function(){finish('ok')})
+        .catch(function(){finish('fail')});
+    }catch(e){finish('fail')}
+  }
+  setInfo();
+  for(var i=0;i<CONC&&i<total;i++)runOne();
+}
 
 function initStats(){
   var total=0,groups=DATA.length;
@@ -242,7 +297,8 @@ function render(){
     items.forEach(function(it,i){
       var safe=encodeURIComponent(it.u);
       html+='<div class="item">'+
-        '<div class="ihead"><span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<div class="ihead"><span class="'+ledCls(it.u)+'" data-led="'+encodeURIComponent(it.u)+'" title="线路状态灯"></span>'+
+        '<span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+
         '<span class="iname" title="'+esc(it.n)+'">'+esc(it.n)+'</span></div>'+
         '<div class="iurl" title="'+esc(it.u)+'">'+esc(it.u)+'</div>'+
         '<div class="iacts">'+
@@ -276,6 +332,7 @@ document.getElementById('copyAll').onclick=function(){
   copy(arr.join('\n'),'已复制 '+arr.length+' 条地址');
 };
 document.getElementById('syncbtn').onclick=function(){syncFromRepo(true)};
+document.getElementById('probeAll').onclick=probeAll;
 initStats();initTabs();render();
 syncFromRepo(false);                       // 打开即同步最新
 setInterval(function(){syncFromRepo(false)},5*60*1000); // 页面常开时每5分钟自动同步
