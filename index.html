@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>影视仓 · 线路中心</title>
+<style>
+:root{
+  --bg:#0b1020; --bg2:#111a30; --card:rgba(255,255,255,.045);
+  --card-h:rgba(255,255,255,.075); --line:rgba(255,255,255,.09);
+  --txt:#e8edf7; --sub:#93a1bd; --mut:#63718f;
+  --acc:#4de2c0; --acc2:#7c8cff; --movie:#4de2c0; --agent:#7c8cff; --live:#ffb454;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  background:radial-gradient(1200px 600px at 15% -10%,#1b2a4a 0%,transparent 60%),
+             radial-gradient(900px 500px at 100% 0%,#2a1b4a 0%,transparent 55%),
+             var(--bg);
+  color:var(--txt);min-height:100vh;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1040px;margin:0 auto;padding:32px 20px 60px}
+header{text-align:center;padding:18px 0 26px}
+.badge{display:inline-block;font-size:12px;letter-spacing:2px;color:var(--acc);
+  border:1px solid rgba(77,226,192,.3);border-radius:20px;padding:4px 14px;margin-bottom:16px}
+h1{font-size:30px;font-weight:700;letter-spacing:1px;
+  background:linear-gradient(90deg,#4de2c0,#7c8cff 70%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--sub);font-size:14px;margin-top:10px}
+.syncbar{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+  margin-top:16px;font-size:12px;color:var(--mut)}
+.syncdot{width:7px;height:7px;border-radius:50%;background:var(--live);
+  box-shadow:0 0 8px var(--live);flex:none}
+.syncdot.ok{background:var(--acc);box-shadow:0 0 8px var(--acc)}
+.syncbtn{background:none;border:1px solid var(--line);color:var(--sub);border-radius:7px;
+  padding:3px 10px;font-size:11px;cursor:pointer;margin-left:4px}
+.syncbtn:hover{color:var(--acc);border-color:rgba(77,226,192,.4)}
+.stats{display:flex;justify-content:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:12px 20px;min-width:96px}
+.stat b{display:block;font-size:22px;color:var(--txt)}
+.stat span{font-size:12px;color:var(--mut)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:8px 0 22px}
+.tab{background:var(--card);border:1px solid var(--line);color:var(--sub);
+  padding:8px 16px;border-radius:10px;font-size:13px;cursor:pointer;transition:.18s;
+  user-select:none}
+.tab:hover{background:var(--card-h);color:var(--txt)}
+.tab.on{background:linear-gradient(90deg,rgba(77,226,192,.18),rgba(124,140,255,.18));
+  border-color:rgba(77,226,192,.45);color:#fff}
+.bar{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.search{flex:1;min-width:180px;background:var(--card);border:1px solid var(--line);
+  border-radius:10px;padding:10px 14px;color:var(--txt);font-size:14px;outline:none}
+.search:focus{border-color:rgba(77,226,192,.5)}
+.search::placeholder{color:var(--mut)}
+.btn{background:var(--card);border:1px solid var(--line);color:var(--sub);
+  padding:10px 16px;border-radius:10px;font-size:13px;cursor:pointer;transition:.18s;
+  white-space:nowrap}
+.btn:hover{background:var(--card-h);color:#fff}
+.btn.pri{background:linear-gradient(90deg,rgba(77,226,192,.2),rgba(124,140,255,.2));
+  border-color:rgba(77,226,192,.4);color:#dffcf4}
+.group{margin-bottom:30px}
+.ghead{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:0 4px}
+.gtitle{font-size:17px;font-weight:600;display:flex;align-items:center;gap:9px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+.dot.movie{background:var(--movie);box-shadow:0 0 10px var(--movie)}
+.dot.agent{background:var(--agent);box-shadow:0 0 10px var(--agent)}
+.dot.live{background:var(--live);box-shadow:0 0 10px var(--live)}
+.gdesc{color:var(--mut);font-size:12px}
+.gcount{margin-left:auto;color:var(--mut);font-size:12px}
+.gcopy{background:none;border:1px solid var(--line);color:var(--sub);border-radius:8px;
+  padding:5px 12px;font-size:12px;cursor:pointer;transition:.18s}
+.gcopy:hover{color:var(--acc);border-color:rgba(77,226,192,.4)}
+.list{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.item{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;transition:.18s}
+.item:hover{background:var(--card-h);border-color:rgba(255,255,255,.16);transform:translateY(-1px)}
+.ihead{display:flex;align-items:center;gap:10px}
+.idx{color:var(--mut);font-size:12px;font-variant-numeric:tabular-nums;min-width:22px}
+.iname{font-size:14px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iurl{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;
+  color:var(--mut);margin:8px 0 0 32px;word-break:break-all;line-height:1.45;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.iacts{display:flex;gap:8px;margin:10px 0 0 32px}
+.mini{background:none;border:1px solid var(--line);color:var(--sub);border-radius:7px;
+  padding:4px 11px;font-size:12px;cursor:pointer;transition:.18s}
+.mini:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+.mini.c{color:var(--acc)}
+.mini.c:hover{border-color:rgba(77,226,192,.5);background:rgba(77,226,192,.08)}
+.empty{text-align:center;color:var(--mut);padding:60px 0;font-size:14px}
+footer{text-align:center;color:var(--mut);font-size:12px;margin-top:50px;line-height:1.9}
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);
+  background:rgba(20,30,50,.96);border:1px solid rgba(77,226,192,.4);color:#dffcf4;
+  padding:11px 22px;border-radius:10px;font-size:13px;opacity:0;pointer-events:none;
+  transition:.25s;z-index:99;box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px){h1{font-size:24px}.list{grid-template-columns:1fr}.stat{min-width:80px;padding:10px 14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="badge">YINGSHICANG · 线路中心</div>
+    <h1>影视仓线路中心</h1>
+    <div class="sub">订阅地址一览 · 分类查看 · 一键复制 · 仓库更新后自动同步</div>
+    <div class="syncbar"><span class="syncdot" id="syncdot"></span><span id="synctext">已加载内置数据，正在检查更新…</span><button class="syncbtn" id="syncbtn">立即刷新</button></div>
+    <div class="stats" id="stats"></div>
+  </header>
+  <div class="tabs" id="tabs"></div>
+  <div class="bar">
+    <input class="search" id="search" placeholder="搜索线路名称或地址…">
+    <button class="btn" id="copyAll">复制当前全部地址</button>
+  </div>
+  <div id="content"></div>
+  <footer>
+    资源来自网络，仅供学习交流，请勿用于违法及商业用途。<br>
+    本页打开时自动从 GitHub 同步最新线路；网络不可用时使用内置快照。
+  </footer>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+var DATA = [{"file": "all.json", "title": "完整线路", "kind": "movie", "desc": "全量影视订阅，含直连与代理", "items": [{"n": "饭太硬", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/fantaiying/tv.json"}, {"n": "自用", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu1/m.json"}, {"n": "暴风", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu2/jx.json"}, {"n": "小马", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu3/xiaoma.json"}, {"n": "潇洒", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/影视/api.json"}, {"n": "天天", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/yingshitiantian.json"}, {"n": "借用", "u": "https://gitee.com/sd-live/zb/raw/master/jx.json"}, {"n": "git借用", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/qitaxianlu/js.json"}, {"n": "1饭太硬线路1", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/1/1.json"}, {"n": "3盒子迷线路3", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/3/3.json"}, {"n": "4肥猫线路4", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/4/4.json"}, {"n": "6 pg线路6", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/6/6.json"}, {"n": "7小米线路7", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/7/7.json"}, {"n": "9花生线路9", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/9/9.json"}, {"n": "10喵影视线路10", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/10/10.json"}, {"n": " 11OK线路11", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/11/11.json"}, {"n": "12多多改版闪退12", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/12/12.json"}, {"n": "13短剧线路13", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/13/13.json"}, {"n": "16菜妮丝线路16", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/16/16.json"}, {"n": "19vox线路19", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/19/19.json"}, {"n": "21杰歌学习21", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/21/21.json"}]}, {"file": "pingchang.json", "title": "日常线路", "kind": "movie", "desc": "日常稳定可用的影视订阅", "items": [{"n": "饭太硬", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/fantaiying/tv.json"}, {"n": "自用", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu1/m.json"}, {"n": "暴风", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu2/jx_putong.json"}, {"n": "小马", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu3/xiaoma_putong.json"}, {"n": "潇洒", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/影视/api.json"}, {"n": "天天", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/yingshitiantian.json"}, {"n": "1饭太硬线路1", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/1/1.json"}, {"n": "3盒子迷线路3", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/3/3.json"}, {"n": "4肥猫线路4", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/4/4.json"}, {"n": "6 pg线路6", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/6/6.json"}, {"n": "7小米线路7", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/7/7.json"}, {"n": "9花生线路9", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/9/9.json"}, {"n": "10喵影视线路10", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/10/10.json"}, {"n": " 11OK线路11", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/11/11.json"}, {"n": "12多多改版闪退12", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/12/12.json"}, {"n": "13短剧线路13", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/13/13.json"}, {"n": "16菜妮丝线路16", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/16/16.json"}, {"n": "19vox线路19", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/19/19.json"}, {"n": "21杰歌学习21", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/21/21.json"}]}, {"file": "wangluoheji.json", "title": "网络合集", "kind": "movie", "desc": "网络收集的影视线路合集", "items": [{"n": "1饭太硬线路1", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/1/1.json"}, {"n": "3盒子迷线路3", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/3/3.json"}, {"n": "4肥猫线路4", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/4/4.json"}, {"n": "6 pg线路6", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/6/6.json"}, {"n": "7小米线路7", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/7/7.json"}, {"n": "9花生线路9", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/9/9.json"}, {"n": "10喵影视线路10", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/10/10.json"}, {"n": " 11OK线路11", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/11/11.json"}, {"n": "12多多改版闪退12", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/12/12.json"}, {"n": "13短剧线路13", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/13/13.json"}, {"n": "16菜妮丝线路16", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/16/16.json"}, {"n": "19vox线路19", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/19/19.json"}, {"n": "21杰歌学习21", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/21/21.json"}]}, {"file": "ghproxyall.json", "title": "加速·完整", "kind": "agent", "desc": "经 GH Proxy 加速的完整线路", "items": [{"n": "tvbox-api-backup1聚合", "u": "https://gh-proxy.com/https://github.com/liu666666667/tvbox-api-backup/blob/main/tvbox/海量采集聚合接口.json"}, {"n": "tvbox-ysc-config单仓订阅", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/tvbox-ysc-config/refs/heads/main/output/单仓聚合.json"}, {"n": "tvbox-api-backup1py聚合", "u": "https://gh-proxy.com/https://github.com/liu666666667/tvbox-api-backup/blob/main/tvbox/海量py聚合接口.json"}, {"n": "饭太硬", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/fantaiying/tv.json"}, {"n": "自用", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu1/m.json"}, {"n": "暴风", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu2/jx.json"}, {"n": "小马", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu3/xiaoma.json"}, {"n": "潇洒", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/影视/api.json"}, {"n": "天天", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/yingshitiantian.json"}, {"n": "借用", "u": "https://raw.giteeusercontent.com/zhouzuozhi/tv/raw/master/ZJY.json"}, {"n": "git借用", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/qitaxianlu/js.json"}, {"n": "1饭太硬线路1", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/1/1.json"}, {"n": "3盒子迷线路3", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/3/3.json"}, {"n": "4肥猫线路4", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/4/4.json"}, {"n": "6 pg线路6", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/6/6.json"}, {"n": "7小米线路7", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/7/7.json"}, {"n": "9花生线路9", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/9/9.json"}, {"n": "10喵影视线路10", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/10/10.json"}, {"n": " 11OK线路11", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/11/11.json"}, {"n": "12多多改版闪退12", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/12/12.json"}, {"n": "13短剧线路13", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/13/13.json"}, {"n": "16菜妮丝线路16", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/16/16.json"}, {"n": "19vox线路19", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/19/19.json"}, {"n": "21杰歌学习21", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/21/21.json"}]}, {"file": "ghproxypingchang.json", "title": "加速·日常", "kind": "agent", "desc": "经 GH Proxy 加速的日常线路", "items": [{"n": "tvbox-api-backup1聚合", "u": "https://gh-proxy.com/https://github.com/liu666666667/tvbox-api-backup/blob/main/tvbox/海量采集聚合接口.json"}, {"n": "tvbox-ysc-config单仓订阅", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/tvbox-ysc-config/refs/heads/main/output/单仓聚合.json"}, {"n": "tvbox-api-backup1py聚合", "u": "https://gh-proxy.com/https://github.com/liu666666667/tvbox-api-backup/blob/main/tvbox/海量py聚合接口.json"}, {"n": "饭太硬", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/fantaiying/tv.json"}, {"n": "自用", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu1/m.json"}, {"n": "暴风", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu2/jx_putong.json"}, {"n": "小马", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu3/xiaoma_putong.json"}, {"n": "潇洒", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/影视/api.json"}, {"n": "天天", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianlu4/yingshitiantian.json"}, {"n": "1饭太硬线路1", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/1/1.json"}, {"n": "3盒子迷线路3", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/3/3.json"}, {"n": "4肥猫线路4", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/4/4.json"}, {"n": "6 pg线路6", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/6/6.json"}, {"n": "7小米线路7", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/7/7.json"}, {"n": "9花生线路9", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/9/9.json"}, {"n": "10喵影视线路10", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/10/10.json"}, {"n": " 11OK线路11", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/11/11.json"}, {"n": "12多多改版闪退12", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/12/12.json"}, {"n": "13短剧线路13", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/13/13.json"}, {"n": "16菜妮丝线路16", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/16/16.json"}, {"n": "19vox线路19", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/19/19.json"}, {"n": "21杰歌学习21", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/21/21.json"}]}, {"file": "ghproxtywangluoheji.json", "title": "加速·合集", "kind": "agent", "desc": "经 GH Proxy 加速的网络合集", "items": [{"n": "1饭太硬线路1", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/1/1.json"}, {"n": "3盒子迷线路3", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/3/3.json"}, {"n": "4肥猫线路4", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/4/4.json"}, {"n": "6 pg线路6", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/6/6.json"}, {"n": "7小米线路7", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/7/7.json"}, {"n": "9花生线路9", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/9/9.json"}, {"n": "10喵影视线路10", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/10/10.json"}, {"n": " 11OK线路11", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/11/11.json"}, {"n": "12多多改版闪退12", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/12/12.json"}, {"n": "13短剧线路13", "u": "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/13/13.json"}, {"n": "16菜妮丝线路16", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/16/16.json"}, {"n": "19vox线路19", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/19/19.json"}, {"n": "21杰歌学习21", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/xianluheji/21/21.json"}]}, {"file": "zhoboall.json", "title": "直播线路", "kind": "live", "desc": "电视直播源订阅", "items": [{"n": "线路1", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/zhiboyuan/anhdx.txt"}, {"n": "tvbox-api-backup1直播聚合", "u": "https://gh-proxy.com/https://github.com/liu666666667/tvbox-api-backup/blob/main/tvbox/海量直播聚合接口.json"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/zhiboyuan/gs.txt"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/zhiboyuan/hblt.txt"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/zhiboyuan/hlgc.txt"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/zhiboyuan/lnc.txt"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/zhiboyuan/lndx.txt"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/zhiboyuan/lnyd.txt"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/qitaxianlu/myHN"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/qitaxianlu/myDS"}, {"n": "线路2", "u": "https://raw.githubusercontent.com/liu666666667/yingshicang/refs/heads/master/dianying/qitaxianlu/mySD"}]}];
+var CDN = "https://cdn.jsdelivr.net/gh/liu666666667/yingshicang@master/";
+var CDN2 = "https://gh-proxy.com/https://raw.githubusercontent.com/liu666666667/yingshicang/master/";
+var SNAP = JSON.parse(JSON.stringify(DATA)); // 内置快照，网络失败时兜底
+
+function setSync(state,msg){
+  var d=document.getElementById('syncdot'),t=document.getElementById('synctext');
+  if(d) d.className='syncdot'+(state==='ok'?' ok':'');
+  if(t) t.textContent=msg;
+}
+function syncFromRepo(manual){
+  setSync('wait','正在从仓库同步最新线路…');
+  function grab(url){
+    return fetch(url+'?t='+Date.now(),{cache:'no-store'})
+      .then(function(r){if(!r.ok)throw new Error(r.status);return r.json()});
+  }
+  var jobs=DATA.map(function(g){
+    return grab(CDN+g.file)
+      .catch(function(){return grab(CDN2+g.file)})  // 主源失败切备用源
+      .then(function(j){return {file:g.file,urls:j.urls||[]}})
+      .catch(function(){return {file:g.file,urls:null}});
+  });
+  Promise.all(jobs).then(function(results){
+    var ok=0,total=0,changed=false;
+    results.forEach(function(res){
+      var g=null;
+      for(var i=0;i<DATA.length;i++){if(DATA[i].file===res.file){g=DATA[i];break}}
+      if(!g)return;
+      if(res.urls && res.urls.length){
+        ok++;
+        var items=res.urls.map(function(u,i){return {n:u.name||('线路'+(i+1)),u:u.url||''}});
+        if(JSON.stringify(items)!==JSON.stringify(g.items)){changed=true;g.items=items}
+      }
+    });
+    DATA.forEach(function(g){total+=g.items.length});
+    if(ok>0){
+      var time=new Date().toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+      setSync('ok','已同步最新线路 · '+ok+'/'+DATA.length+' 个清单 · '+time+(changed?' · 有更新':''));
+      initStats();render();
+      if(manual) toast(changed?'已同步到最新线路':'已是最新，无变化');
+    }else{
+      DATA=JSON.parse(JSON.stringify(SNAP));
+      setSync('fail','网络不可用，显示内置快照 · '+total+' 条');
+      if(manual) toast('同步失败，当前为内置数据');
+    }
+  });
+}
+
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove('show')},1800);
+}
+function copy(text, okMsg){
+  function done(){toast(okMsg||'已复制')}
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done,function(){fallback()});
+  }else{ fallback(); }
+  function fallback(){
+    var ta=document.createElement('textarea');ta.value=text;
+    ta.style.position='fixed';ta.style.opacity='0';
+    document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');done()}catch(e){toast('复制失败，请手动选择')}
+    document.body.removeChild(ta);
+  }
+}
+var TABS=[
+  {k:'all',   n:'全部线路'},
+  {k:'movie', n:'影视订阅'},
+  {k:'agent', n:'加速代理'},
+  {k:'live',  n:'直播订阅'}
+];
+var cur='all', kw='';
+
+function initStats(){
+  var total=0,groups=DATA.length;
+  DATA.forEach(function(g){total+=g.items.length});
+  var movie=0,live=0;
+  DATA.forEach(function(g){if(g.kind==='live')live+=g.items.length;else movie+=g.items.length});
+  document.getElementById('stats').innerHTML=
+    '<div class="stat"><b>'+total+'</b><span>线路总数</span></div>'+
+    '<div class="stat"><b>'+groups+'</b><span>订阅清单</span></div>'+
+    '<div class="stat"><b>'+movie+'</b><span>影视/加速</span></div>'+
+    '<div class="stat"><b>'+live+'</b><span>直播源</span></div>';
+}
+function initTabs(){
+  document.getElementById('tabs').innerHTML=TABS.map(function(t){
+    return '<div class="tab'+(t.k===cur?' on':'')+'" data-k="'+t.k+'">'+t.n+'</div>';
+  }).join('');
+  Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(el){
+    el.onclick=function(){
+      cur=el.getAttribute('data-k');
+      Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(x){
+        x.classList.toggle('on',x===el)
+      });
+      render();
+    };
+  });
+}
+function visibleGroups(){
+  return DATA.filter(function(g){return cur==='all'||g.kind===cur});
+}
+function render(){
+  var html='',any=false;
+  visibleGroups().forEach(function(g){
+    var items=g.items.filter(function(it){
+      if(!kw)return true;
+      var s=(it.n+' '+it.u).toLowerCase();
+      return s.indexOf(kw.toLowerCase())>=0;
+    });
+    if(!items.length)return;
+    any=true;
+    var allText=g.items.map(function(it){return it.u}).join('\n');
+    html+='<div class="group">'+
+      '<div class="ghead">'+
+        '<div class="gtitle"><span class="dot '+g.kind+'"></span>'+g.title+'</div>'+
+        '<span class="gdesc">'+g.desc+'</span>'+
+        '<span class="gcount">'+items.length+' 条</span>'+
+        '<button class="gcopy" data-all="'+encodeURIComponent(allText)+'">复制整组</button>'+
+      '</div><div class="list">';
+    items.forEach(function(it,i){
+      var safe=encodeURIComponent(it.u);
+      html+='<div class="item">'+
+        '<div class="ihead"><span class="idx">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="iname" title="'+esc(it.n)+'">'+esc(it.n)+'</span></div>'+
+        '<div class="iurl" title="'+esc(it.u)+'">'+esc(it.u)+'</div>'+
+        '<div class="iacts">'+
+          '<button class="mini c" data-copy="'+safe+'">复制地址</button>'+
+          '<a class="mini" href="'+esc(it.u)+'" target="_blank" rel="noopener">打开</a>'+
+        '</div></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('content').innerHTML=any?html:'<div class="empty">没有匹配的线路</div>';
+  bind();
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function bind(){
+  Array.prototype.forEach.call(document.querySelectorAll('[data-copy]'),function(b){
+    b.onclick=function(){copy(decodeURIComponent(b.getAttribute('data-copy')),'订阅地址已复制')};
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('[data-all]'),function(b){
+    b.onclick=function(){copy(decodeURIComponent(b.getAttribute('data-all')),'整组地址已复制')};
+  });
+}
+document.getElementById('search').oninput=function(e){kw=e.target.value.trim();render()};
+document.getElementById('copyAll').onclick=function(){
+  var arr=[];
+  visibleGroups().forEach(function(g){
+    g.items.forEach(function(it){
+      if(!kw|| (it.n+' '+it.u).toLowerCase().indexOf(kw.toLowerCase())>=0) arr.push(it.u);
+    });
+  });
+  if(!arr.length){toast('没有可复制的地址');return}
+  copy(arr.join('\n'),'已复制 '+arr.length+' 条地址');
+};
+document.getElementById('syncbtn').onclick=function(){syncFromRepo(true)};
+initStats();initTabs();render();
+syncFromRepo(false);                       // 打开即同步最新
+setInterval(function(){syncFromRepo(false)},5*60*1000); // 页面常开时每5分钟自动同步
+document.addEventListener('visibilitychange',function(){
+  if(!document.hidden) syncFromRepo(false); // 切回页面时同步
+});
+</script>
+</body>
+</html>
